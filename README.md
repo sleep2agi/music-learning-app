@@ -77,6 +77,17 @@ APK 路径：
 
 推送 `v*` 标签时，同一次构建还会把 `yuexi-web.zip` 和 `yuexi-debug.apk` 附加到 GitHub Release。
 
+## iOS 模拟器构建
+
+同一个网页包可以放进 Capacitor 的 iOS 工程。`.github/workflows/ios.yml` 在 macOS 上打两个不签名的产物，只上传到 Actions，不会发布到 App Store 或 TestFlight：
+
+- `yuexi-ios-simulator`：iOS 模拟器 `.app` 的 zip
+- `yuexi-ios-unsigned-xcarchive` 和 `yuexi-ios-unsigned-ipa`：未签名的设备归档
+
+第一次点按会在用户手势里创建并恢复 Web Audio 上下文，iOS Safari 和 WKWebView 都需要这一步才能发声。
+
+以后要做签名或 TestFlight，需要 Apple Developer 会员、开发团队 ID、Distribution 证书和描述文件，把 Xcode 签名改回 Automatic，用 `xcodebuild -exportArchive` 导出 App Store 包，再用 App Store Connect API 上传。本仓库没有这些密钥。
+
 ## 技术栈
 
 Vite、React、TypeScript、Vitest、Capacitor（Android）。桌面浏览器直接使用网页版。
