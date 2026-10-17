@@ -1,9 +1,10 @@
 {
   "name": "lequdao",
   "private": true,
-  "version": "0.2.0",
-  "description": "乐趣岛：在浏览器和 Android 上玩乐理、吉他与钢琴",
+  "version": "0.3.0",
+  "description": "乐趣岛：在浏览器、Android、Mac 与 Windows 上玩乐理、吉他与钢琴",
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -11,7 +12,8 @@
     "test": "vitest run",
     "preview": "vite preview",
     "cap:sync": "cap sync android",
-    "android:debug": "npm run build && cap sync android && cd android && ./gradlew assembleDebug"
+    "android:debug": "npm run build && cap sync android && cd android && ./gradlew assembleDebug",
+    "desktop": "electron-builder"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
@@ -25,6 +27,8 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "electron": "^44.8.0",
+    "electron-builder": "^26.15.3",
     "oxlint": "^1.81.0",
     "typescript": "~6.0.2",
     "vite": "^8.3.0",

@@ -1,0 +1,32 @@
+appId: top.sleep2agi.lequdao
+productName: 乐趣岛
+directories:
+  output: release
+files:
+  - dist/**/*
+  - electron/**/*
+  - package.json
+asar: true
+mac:
+  category: public.app-category.music
+  identity: null
+  gatekeeperAssess: false
+  target:
+    - target: dmg
+      arch:
+        - universal
+  artifactName: lequdao-mac.${ext}
+dmg:
+  title: 乐趣岛
+win:
+  signAndEditExecutable: false
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: lequdao-windows.${ext}
+nsis:
+  oneClick: true
+  perMachine: false
+  shortcutName: 乐趣岛
+  artifactName: lequdao-windows.${ext}

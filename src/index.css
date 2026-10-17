@@ -630,6 +630,40 @@ h1, h2, h3, p { margin-top: 0; }
 }
 .burst i:nth-child(odd) { background: #fff1cc; width: 6px; height: 6px; }
 
+.update-open {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  border-radius: 999px;
+  min-height: 36px;
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+.update-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.55);
+}
+.update-dialog {
+  width: min(460px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.update-dialog h2 { margin: 0; font-size: 1.15rem; }
+.update-dialog p { margin: 0; }
+.update-note { color: var(--muted); }
+.update-dialog a { color: var(--brass); }
+
 .toast {
   position: fixed;
   top: 84px;
