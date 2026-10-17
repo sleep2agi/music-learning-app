@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "cap:sync": "cap sync android",
     "android:debug": "npm run build && cap sync android && cd android && ./gradlew assembleDebug",
-    "desktop": "electron-builder"
+    "desktop": "electron-builder",
+    "desktop:mac:signed": "node scripts/desktop-mac-signed.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",

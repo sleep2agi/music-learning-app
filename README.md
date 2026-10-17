@@ -77,16 +77,38 @@ APK 路径：
 
 ## 构建 Mac 与 Windows
 
-桌面版用 Electron 包同一份网页。v0.3.0 的安装包不签名。
+桌面版用 Electron 包同一份网页。本仓库的持续集成打出的 Mac 包不签名，Windows 也不签名。
 
-- Mac 第一次打开可能被 Gatekeeper 拦截，需要在「系统设置 → 隐私与安全性」里允许。
+- 未签名的 Mac 包第一次打开可能被 Gatekeeper 拦截，需要在「系统设置 → 隐私与安全性」里允许。
 - Windows 可能出现 SmartScreen 提示，需要选择仍要运行。
+
+未签名（和 CI 相同）：
 
 ```bash
 npm run build
-npx electron-builder --mac --universal
-npx electron-builder --win --x64
+CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --universal --publish never
+npx electron-builder --win --x64 --publish never
 ```
+
+签名并公证的 Mac 包不在本仓库的 CI 里构建。Apple 证书和 API 密钥只放在 [sleep2agi/agent-network-app](https://github.com/sleep2agi/agent-network-app) 的 `macos-signing` 环境。那边的 workflow 检出本仓库的某个 tag 或 commit，然后执行：
+
+```bash
+npm ci
+npm run desktop:mac:signed
+```
+
+`desktop:mac:signed` 在变量缺失、`APPLE_API_KEY` 不是 `.p8` 文件路径、或当前是 pull request（`GITHUB_BASE_REF` 有值）时会直接退出，不会打出未签名包。它不打印这些变量的值。调用方需要设置：
+
+| 环境变量 | 含义 | agent-network-app 的 secret |
+| --- | --- | --- |
+| `CSC_LINK` | Developer ID `.p12` 的路径，或该文件的 base64。secret 本身已是 base64，可以直接传入 | `APPLE_CERTIFICATE` |
+| `CSC_KEY_PASSWORD` | `.p12` 密码 | `APPLE_CERTIFICATE_PASSWORD` |
+| `APPLE_API_KEY` | 解码后的 `AuthKey_*.p8` **文件路径**。把 `APPLE_API_KEY_BASE64` 解码到临时文件，再把路径赋给这个变量。这不是 key id | `APPLE_API_KEY_BASE64`（解码后的路径） |
+| `APPLE_API_KEY_ID` | App Store Connect API key id | `APPLE_API_KEY` |
+| `APPLE_API_ISSUER` | issuer id | `APPLE_API_ISSUER` |
+| `APPLE_TEAM_ID` | Team ID。API key 公证使用前三项；Team ID 供 Apple ID 密码流程使用，脚本仍要求它存在 | `APPLE_TEAM_ID` |
+
+不要设置 `CSC_IDENTITY_AUTO_DISCOVERY=false`，也不要设置带 `Developer ID Application:` 前缀的 `CSC_NAME`。脚本会打开证书自动发现，用 `CSC_LINK` 里的 Developer ID 签名，并在公证后检查 Authority 是否为 `Developer ID Application: wenxing hu (446BLT75JZ)`，再对 `.app` 执行 `xcrun stapler validate`。`APPLE_API_KEY`、`APPLE_API_KEY_ID`、`APPLE_API_ISSUER` 都为空时，electron-builder 跳过公证；未签名 CI 不设置它们。
 
 产物：
 
@@ -110,11 +132,11 @@ npx electron-builder --win --x64
 
 1. 运行 lint 和单元测试
 2. 构建网页包和 debug APK
-3. 在 macOS 上构建通用 `lequdao-mac.dmg`（Intel 与 Apple Silicon）
-4. 在 Windows 上构建 `lequdao-windows.exe`
+3. 在 macOS 上构建通用 `lequdao-mac.dmg`（Intel 与 Apple Silicon）。这一步设置 `CSC_IDENTITY_AUTO_DISCOVERY=false`，且不提供 Apple 环境变量，因此不签名、也不公证
+4. 在 Windows 上构建未签名的 `lequdao-windows.exe`
 5. 上传产物：`lequdao-web`、`lequdao-debug-apk`、`lequdao-mac`、`lequdao-windows`
 
-推送 `v*` 标签时，同一次构建会把 `lequdao-web.zip`、`lequdao-debug.apk`、`lequdao-mac.dmg` 和 `lequdao-windows.exe` 附加到 GitHub Release。Android 应用 id 是 `top.sleep2agi.lequdao`。
+推送 `v*` 标签时，同一次构建会把 `lequdao-web.zip`、`lequdao-debug.apk`、`lequdao-mac.dmg` 和 `lequdao-windows.exe` 附加到 GitHub Release。这个 Mac 包仍是未签名的。要换成 Developer ID 签名并公证的 `lequdao-mac.dmg`，在 agent-network-app 里对同一个 tag 运行 `npm run desktop:mac:signed`（见上一节的环境变量）。Android 应用 id 是 `top.sleep2agi.lequdao`。
 
 ## 技术栈
 
