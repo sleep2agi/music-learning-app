@@ -7,6 +7,8 @@ files:
   - electron/**/*
   - package.json
 asar: true
+# The release workflow uploads artifacts. Do not publish from electron-builder.
+publish: null
 mac:
   category: public.app-category.music
   identity: null
