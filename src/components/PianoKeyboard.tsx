@@ -8,6 +8,8 @@ export function PianoKeyboard({
   rootPc,
   sounding,
   onPlay,
+  cues = [],
+  markRoot = true,
 }: {
   startMidi: number
   endMidi: number
@@ -15,6 +17,8 @@ export function PianoKeyboard({
   rootPc: number
   sounding: readonly number[]
   onPlay: (midi: number) => void
+  cues?: readonly number[]
+  markRoot?: boolean
 }) {
   const midis: number[] = []
   for (let midi = startMidi; midi <= endMidi; midi += 1) midis.push(midi)
@@ -22,6 +26,7 @@ export function PianoKeyboard({
   const blacks = midis.filter((midi) => isBlackKey(midi))
   const highlight = new Set(highlighted.map((pc) => mod12(pc)))
   const soundingSet = new Set(sounding)
+  const cueSet = new Set(cues)
 
   function whitesBefore(midi: number): number {
     return whites.filter((white) => white < midi).length
@@ -36,7 +41,8 @@ export function PianoKeyboard({
             midi={midi}
             white
             lit={highlight.has(mod12(midi))}
-            root={mod12(midi) === mod12(rootPc)}
+            root={markRoot && mod12(midi) === mod12(rootPc)}
+            cue={cueSet.has(midi)}
             sounding={soundingSet.has(midi)}
             onPlay={onPlay}
           />
@@ -47,7 +53,8 @@ export function PianoKeyboard({
             midi={midi}
             white={false}
             lit={highlight.has(mod12(midi))}
-            root={mod12(midi) === mod12(rootPc)}
+            root={markRoot && mod12(midi) === mod12(rootPc)}
+            cue={cueSet.has(midi)}
             sounding={soundingSet.has(midi)}
             onPlay={onPlay}
             style={{ left: `calc(${whitesBefore(midi)} / ${whites.length} * 100%)` }}
@@ -63,6 +70,7 @@ function Key({
   white,
   lit,
   root,
+  cue,
   sounding,
   onPlay,
   style,
@@ -71,6 +79,7 @@ function Key({
   white: boolean
   lit: boolean
   root: boolean
+  cue: boolean
   sounding: boolean
   onPlay: (midi: number) => void
   style?: CSSProperties
@@ -80,12 +89,13 @@ function Key({
     white ? 'white-key' : 'black-key',
     lit ? 'is-lit' : '',
     root ? 'is-root' : '',
+    cue ? 'is-cue' : '',
     sounding ? 'is-sounding' : '',
   ]
     .filter(Boolean)
     .join(' ')
   return (
-    <button type="button" className={className} style={style} aria-label={name} aria-pressed={lit} onClick={() => onPlay(midi)}>
+    <button type="button" className={className} style={style} data-midi={midi} aria-label={name} aria-pressed={lit || cue} onClick={() => onPlay(midi)}>
       <span>{white ? name : name.replace(/\d+$/, '')}</span>
     </button>
   )

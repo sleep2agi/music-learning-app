@@ -1,4 +1,4 @@
-package app.yuexi.learn;
+package top.sleep2agi.lequdao;
 
 import com.getcapacitor.BridgeActivity;
 

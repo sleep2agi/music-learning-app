@@ -9,6 +9,7 @@ import {
   GUITAR_STRINGS,
   type GuitarChordShape,
 } from '../data/guitar.ts'
+import { writeHash } from '../nav.ts'
 import { midiToFreq, midiToName, pitchClassName } from '../theory/notes.ts'
 import { NoteReadout } from './NoteReadout.tsx'
 
@@ -44,11 +45,13 @@ export function GuitarView() {
   return (
     <div className="stack">
       <section className="card">
-        <div className="section-head">
+        <div className="section-head row-head">
           <h2>指板</h2>
-          <p>低音弦在上方，琴头在左。点按品位可以听到那个音，金色圆点是当前和弦。</p>
+          <button type="button" className="ghost" onClick={() => writeHash('play-guitar')}>
+            抢音
+          </button>
         </div>
-        <NoteReadout midis={sound.last} idle="点按品位或和弦图即可发声。" />
+        <NoteReadout midis={sound.last} idle="" />
         <p className="scroll-hint">窄屏时可以左右滑动指板。</p>
         <div className="fretboard-scroll">
           <table className="fretboard">
@@ -112,8 +115,7 @@ export function GuitarView() {
 
       <section className="card">
         <div className="section-head">
-          <h2>常用和弦</h2>
-          <p>点按和弦图会拨响这个把位，并在指板上标出按弦位置。</p>
+          <h2>和弦</h2>
         </div>
         <div className="chord-grid">
           {GUITAR_CHORDS.map((chord) => (
@@ -133,8 +135,7 @@ export function GuitarView() {
 
       <section className="card">
         <div className="section-head">
-          <h2>标准调弦</h2>
-          <p>从低音到高音是 E、A、D、G、B、E。点按播放参考音，用来对照调弦。</p>
+          <h2>调弦</h2>
         </div>
         <div className="tuner-grid">
           {GUITAR_STRINGS.map((string) => {

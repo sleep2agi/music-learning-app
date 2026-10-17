@@ -1,29 +1,30 @@
 import { useEffect, useState } from 'react'
 import { GuitarView } from './components/GuitarView.tsx'
 import { PianoView } from './components/PianoView.tsx'
+import { PlayView } from './components/PlayView.tsx'
 import { TheoryView } from './components/TheoryView.tsx'
+import { readTab, writeHash, type Tab } from './nav.ts'
+import { BADGE_DEFS } from './play/stats.ts'
+import { PlayStatsProvider } from './storage/PlayStatsProvider.tsx'
+import { usePlayStats } from './storage/usePlayStats.ts'
 
-const TABS = [
+const TABS: { id: Tab; label: string }[] = [
   { id: 'theory', label: '乐理' },
   { id: 'guitar', label: '吉他' },
   { id: 'piano', label: '钢琴' },
-] as const
-
-type Tab = (typeof TABS)[number]['id']
-
-function readTab(): Tab {
-  const value = window.location.hash.replace('#', '')
-  if (value === 'guitar' || value === 'piano' || value === 'theory') return value
-  return 'theory'
-}
-
-function writeTab(next: Tab) {
-  const hash = `#${next}`
-  if (window.location.hash === hash) return
-  window.location.hash = hash
-}
+  { id: 'play', label: '玩' },
+]
 
 export default function App() {
+  return (
+    <PlayStatsProvider>
+      <Shell />
+    </PlayStatsProvider>
+  )
+}
+
+function Shell() {
+  const { stats } = usePlayStats()
   const [tab, setTab] = useState<Tab>(readTab)
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function App() {
   }, [tab])
 
   function selectTab(next: Tab) {
-    writeTab(next)
+    writeHash(next === 'play' ? 'play' : next)
     setTab(next)
   }
 
@@ -54,10 +55,13 @@ export default function App() {
               </svg>
             </span>
             <div>
-              <h1>乐习</h1>
-              <p>乐理、吉他与钢琴</p>
+              <h1>乐趣岛</h1>
+              <p>边玩边学</p>
             </div>
           </div>
+          <p className="streak-pill">
+            {stats.streak} 天 · {stats.badges.length}/{BADGE_DEFS.length}
+          </p>
           <nav className="tabs" aria-label="章节">
             {TABS.map((item) => (
               <button
@@ -77,6 +81,7 @@ export default function App() {
         {tab === 'theory' && <TheoryView />}
         {tab === 'guitar' && <GuitarView />}
         {tab === 'piano' && <PianoView />}
+        {tab === 'play' && <PlayView />}
       </main>
     </div>
   )

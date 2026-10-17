@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSound } from '../audio/useSound.ts'
+import { writeHash } from '../nav.ts'
 import { PianoKeyboard } from './PianoKeyboard.tsx'
 import { NoteReadout } from './NoteReadout.tsx'
 import {
@@ -41,9 +42,14 @@ export function PianoView() {
   return (
     <div className="stack">
       <section className="card">
-        <div className="section-head">
-          <h2>键盘</h2>
-          <p>两个八度，从 C3 到 C5。金色琴键属于当前音阶或和弦，描边更深的是根音。</p>
+        <div className="section-head row-head">
+          <div>
+            <h2>键盘</h2>
+            <p>两个八度，从 C3 到 C5。金色琴键属于当前音阶或和弦。</p>
+          </div>
+          <button type="button" className="ghost" onClick={() => writeHash('play-simon')}>
+            跟灯
+          </button>
         </div>
         <div className="controls">
           <label className="field">
