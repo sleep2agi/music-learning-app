@@ -30,3 +30,4 @@ android/local.properties
 android/captures/
 *.apk
 *.aab
+release/

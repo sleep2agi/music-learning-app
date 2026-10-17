@@ -75,19 +75,49 @@ APK 路径：
 
 也可以用 Android Studio 打开 `android/` 目录运行。
 
+## 构建 Mac 与 Windows
+
+桌面版用 Electron 包同一份网页。v0.3.0 的安装包不签名。
+
+- Mac 第一次打开可能被 Gatekeeper 拦截，需要在「系统设置 → 隐私与安全性」里允许。
+- Windows 可能出现 SmartScreen 提示，需要选择仍要运行。
+
+```bash
+npm run build
+npx electron-builder --mac --universal
+npx electron-builder --win --x64
+```
+
+产物：
+
+- `release/lequdao-mac.dmg`
+- `release/lequdao-windows.exe`
+
+## 检查更新
+
+应用里的「检查更新」读取 ModelScope 数据集 [SmartFlowAI/music-learning-app](https://modelscope.cn/datasets/SmartFlowAI/music-learning-app) 的 `latest/VERSION`，和本机版本比较。有新版本时，按平台下载：
+
+- Android：`latest/lequdao-debug.apk`
+- 网页：`latest/lequdao-web.zip`
+- Mac：`latest/lequdao-mac.dmg`
+- Windows：`latest/lequdao-windows.exe`
+
+下载前会对照 `latest/SHA256SUMS`。地址形如 `https://modelscope.cn/datasets/SmartFlowAI/music-learning-app/resolve/master/latest/VERSION`。
+
 ## 持续集成
 
 `.github/workflows/ci.yml` 会在拉取请求和 `main` 上：
 
 1. 运行 lint 和单元测试
-2. 构建网页包
-3. 构建 debug APK
-4. 上传两个产物：`lequdao-web`（网页 zip）和 `lequdao-debug-apk`
+2. 构建网页包和 debug APK
+3. 在 macOS 上构建通用 `lequdao-mac.dmg`（Intel 与 Apple Silicon）
+4. 在 Windows 上构建 `lequdao-windows.exe`
+5. 上传产物：`lequdao-web`、`lequdao-debug-apk`、`lequdao-mac`、`lequdao-windows`
 
-推送 `v*` 标签时，同一次构建还会把 `lequdao-web.zip` 和 `lequdao-debug.apk` 附加到 GitHub Release。Android 应用 id 是 `top.sleep2agi.lequdao`。
+推送 `v*` 标签时，同一次构建会把 `lequdao-web.zip`、`lequdao-debug.apk`、`lequdao-mac.dmg` 和 `lequdao-windows.exe` 附加到 GitHub Release。Android 应用 id 是 `top.sleep2agi.lequdao`。
 
 ## 技术栈
 
-Vite、React、TypeScript、Vitest、Capacitor（Android）。桌面浏览器直接使用网页版。
+Vite、React、TypeScript、Vitest、Capacitor（Android）、Electron（Mac 与 Windows）。桌面浏览器直接使用网页版。
 
 高音谱号使用 [Noto Music](https://github.com/notofonts/notomusic)，许可见 `LICENSES/NotoMusic-OFL.txt`（SIL Open Font License 1.1）。

@@ -3,6 +3,7 @@ import { GuitarView } from './components/GuitarView.tsx'
 import { PianoView } from './components/PianoView.tsx'
 import { PlayView } from './components/PlayView.tsx'
 import { TheoryView } from './components/TheoryView.tsx'
+import { UpdateCheck } from './components/UpdateCheck.tsx'
 import { readTab, writeHash, type Tab } from './nav.ts'
 import { BADGE_DEFS } from './play/stats.ts'
 import { PlayStatsProvider } from './storage/PlayStatsProvider.tsx'
@@ -62,6 +63,7 @@ function Shell() {
           <p className="streak-pill">
             {stats.streak} 天 · {stats.badges.length}/{BADGE_DEFS.length}
           </p>
+          <UpdateCheck />
           <nav className="tabs" aria-label="章节">
             {TABS.map((item) => (
               <button
