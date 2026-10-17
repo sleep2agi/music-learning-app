@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "app.yuexi.learn"
+    namespace = "top.sleep2agi.lequdao"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "app.yuexi.learn"
+        applicationId "top.sleep2agi.lequdao"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2

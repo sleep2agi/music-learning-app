@@ -55,7 +55,7 @@ function Shell() {
               </svg>
             </span>
             <div>
-              <h1>乐习</h1>
+              <h1>乐趣岛</h1>
               <p>边玩边学</p>
             </div>
           </div>

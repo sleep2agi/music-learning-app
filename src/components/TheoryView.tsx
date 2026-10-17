@@ -39,10 +39,10 @@ export function TheoryView() {
     <div className="stack">
       <section className="card progress-card">
         <div>
-          <h2>学习进度</h2>
+          <h2>闯关进度</h2>
           <p>
-            已学课程 {doneCount} / {LESSONS.length}
-            {ratio === null ? ' · 还没有做练习' : ` · 练习正确率 ${ratio}%（${progress.quizCorrect}/${progress.quizAnswered}）`}
+            已完成 {doneCount} / {LESSONS.length}
+            {ratio === null ? ' · 还没有答题' : ` · 答题正确率 ${ratio}%（${progress.quizCorrect}/${progress.quizAnswered}）`}
           </p>
         </div>
         <div className="meter" aria-hidden="true">

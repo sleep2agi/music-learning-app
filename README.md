@@ -1,6 +1,6 @@
-# 乐习
+# 乐趣岛
 
-一个在浏览器里就能打开的音乐学习小应用，包含乐理、吉他、钢琴，还有几个轻量小游戏。界面是简体中文，深色主题，手机上也能用。声音由 Web Audio API 实时合成，没有登录，也没有后端。学习进度、连续天数和徽章保存在本机浏览器里。
+一个在浏览器里就能打开的音乐小应用，英文名 LeQuDao。包含乐理、吉他、钢琴，还有几个轻量小游戏。界面是简体中文，深色主题，手机上也能用。声音由 Web Audio API 实时合成，没有登录，也没有后端。闯关进度、连续天数和徽章保存在本机浏览器里。
 
 ## 功能
 
@@ -82,9 +82,9 @@ APK 路径：
 1. 运行 lint 和单元测试
 2. 构建网页包
 3. 构建 debug APK
-4. 上传两个产物：`yuexi-web`（网页 zip）和 `yuexi-debug-apk`
+4. 上传两个产物：`lequdao-web`（网页 zip）和 `lequdao-debug-apk`
 
-推送 `v*` 标签时，同一次构建还会把 `yuexi-web.zip` 和 `yuexi-debug.apk` 附加到 GitHub Release。
+推送 `v*` 标签时，同一次构建还会把 `lequdao-web.zip` 和 `lequdao-debug.apk` 附加到 GitHub Release。Android 应用 id 是 `top.sleep2agi.lequdao`。
 
 ## 技术栈
 

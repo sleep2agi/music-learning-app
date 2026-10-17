@@ -59,7 +59,7 @@ describe('play stats', () => {
     const store = memoryStore()
     savePlayStats({ ...emptyPlayStats(), bestCombo: 3, badges: [] }, store)
     expect(loadPlayStats(store).badges).toEqual(['combo-3'])
-    store.setItem('yuexi.play.v1', '{')
+    store.setItem('lequdao.play.v1', '{')
     expect(loadPlayStats(store)).toEqual(emptyPlayStats())
   })
 })

@@ -4,7 +4,7 @@ export interface LearningProgress {
   quizCorrect: number
 }
 
-export const PROGRESS_STORAGE_KEY = 'yuexi.progress.v1'
+export const PROGRESS_STORAGE_KEY = 'lequdao.progress.v1'
 
 export interface KeyValueStore {
   getItem(key: string): string | null

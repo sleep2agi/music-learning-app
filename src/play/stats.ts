@@ -1,4 +1,4 @@
-export const PLAY_STATS_KEY = 'yuexi.play.v1'
+export const PLAY_STATS_KEY = 'lequdao.play.v1'
 
 export interface PlayStats {
   lastDay: string | null

@@ -1,8 +1,8 @@
 {
-  "name": "yuexi",
+  "name": "lequdao",
   "private": true,
   "version": "0.2.0",
-  "description": "乐习：在浏览器和 Android 上练习乐理、吉他与钢琴",
+  "description": "乐趣岛：在浏览器和 Android 上玩乐理、吉他与钢琴",
   "type": "module",
   "scripts": {
     "dev": "vite",
