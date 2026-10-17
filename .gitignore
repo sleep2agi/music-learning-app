@@ -31,3 +31,9 @@ android/captures/
 *.apk
 *.aab
 release/
+
+# Apple signing material. Never commit certificates or API keys.
+*.p12
+*.pfx
+*.p8
+AuthKey_*

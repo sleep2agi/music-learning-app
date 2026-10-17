@@ -11,8 +11,16 @@ asar: true
 publish: null
 mac:
   category: public.app-category.music
-  identity: null
+  hardenedRuntime: true
   gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.inherit.plist
+  # electron-builder 26 notarizes only when APPLE_API_KEY (path to the .p8),
+  # APPLE_API_KEY_ID, and APPLE_API_ISSUER are set. APPLE_TEAM_ID is read for the
+  # Apple ID password flow. Unsigned CI sets none of these, so notarization is skipped.
+  # Signing uses CSC_LINK and CSC_KEY_PASSWORD. Leave identity unset.
+  # Setting identity to null skips signing even when CSC_LINK is present.
+  notarize: true
   target:
     - target: dmg
       arch:

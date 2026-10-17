@@ -104,6 +104,8 @@ jobs:
 
       - name: Build unsigned Mac disk image
         env:
+          # No CSC_LINK and no Apple API key env, so this stays unsigned and notarization is skipped.
+          # Signed DMGs are built by npm run desktop:mac:signed from agent-network-app.
           CSC_IDENTITY_AUTO_DISCOVERY: false
         # Never let electron-builder publish: it does so on CI and on tags, and fails without GH_TOKEN.
         run: npx electron-builder --mac --universal --publish never
