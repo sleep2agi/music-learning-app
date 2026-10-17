@@ -1,7 +1,7 @@
 {
   "name": "yuexi",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "乐习：在浏览器和 Android 上练习乐理、吉他与钢琴",
   "type": "module",
   "scripts": {
