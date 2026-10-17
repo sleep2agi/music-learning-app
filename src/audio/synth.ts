@@ -10,13 +10,28 @@ export interface PlayOptions {
 }
 
 let context: AudioContext | null = null
+let unlocked = false
 
 function getContext(): AudioContext {
   if (!context) context = new AudioContext()
   return context
 }
 
+/** Start audio inside a user gesture. iOS Safari and WKWebView ignore later notes until this runs. */
+export function unlockAudio(): void {
+  const ctx = getContext()
+  if (ctx.state === 'suspended') void ctx.resume()
+  if (unlocked) return
+  const buffer = ctx.createBuffer(1, 1, ctx.sampleRate)
+  const source = ctx.createBufferSource()
+  source.buffer = buffer
+  source.connect(ctx.destination)
+  source.start()
+  unlocked = true
+}
+
 export async function resumeAudio(): Promise<void> {
+  unlockAudio()
   const ctx = getContext()
   if (ctx.state === 'suspended') await ctx.resume()
 }

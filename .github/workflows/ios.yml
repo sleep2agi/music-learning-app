@@ -1,0 +1,115 @@
+name: iOS
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unsigned:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Build web bundle
+        run: npm run build
+
+      - name: Sync Capacitor iOS
+        run: npx cap sync ios
+
+      - name: Build unsigned simulator app
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ios/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Zip simulator app
+        run: |
+          APP=$(find ios/DerivedData/Build/Products -type d -name 'App.app' | head -1)
+          test -n "$APP"
+          ditto -c -k --keepParent "$APP" yuexi-ios-simulator.zip
+
+      - name: Upload simulator app
+        uses: actions/upload-artifact@v7
+        with:
+          name: yuexi-ios-simulator
+          path: yuexi-ios-simulator.zip
+          if-no-files-found: error
+
+      - name: Disable signing for the device archive
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("ios/App/App.xcodeproj/project.pbxproj")
+          text = path.read_text()
+          old = "CODE_SIGN_STYLE = Automatic;"
+          new = """CODE_SIGN_STYLE = Manual;
+          \t\t\t\tCODE_SIGNING_ALLOWED = NO;
+          \t\t\t\tCODE_SIGNING_REQUIRED = NO;
+          \t\t\t\tCODE_SIGN_IDENTITY = "";
+          \t\t\t\tDEVELOPMENT_TEAM = "";"""
+          if text.count(old) < 1:
+              raise SystemExit("CODE_SIGN_STYLE = Automatic; not found")
+          path.write_text(text.replace(old, new).replace('CODE_SIGN_IDENTITY = "iPhone Developer";', 'CODE_SIGN_IDENTITY = "";'))
+          PY
+
+      - name: Build unsigned device archive
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath ios/DerivedData/Yuexi.xcarchive \
+            -derivedDataPath ios/DerivedDataDevice \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            archive
+
+      - name: Package unsigned archive and ipa
+        run: |
+          APP=$(find ios/DerivedData/Yuexi.xcarchive/Products -type d -name 'App.app' | head -1)
+          test -n "$APP"
+          rm -rf Payload
+          mkdir Payload
+          cp -R "$APP" Payload/
+          ditto -c -k --keepParent Payload yuexi-ios-unsigned.ipa
+          ditto -c -k --keepParent ios/DerivedData/Yuexi.xcarchive yuexi-ios-unsigned.xcarchive.zip
+
+      - name: Upload unsigned archive
+        uses: actions/upload-artifact@v7
+        with:
+          name: yuexi-ios-unsigned-xcarchive
+          path: yuexi-ios-unsigned.xcarchive.zip
+          if-no-files-found: error
+
+      - name: Upload unsigned ipa
+        uses: actions/upload-artifact@v7
+        with:
+          name: yuexi-ios-unsigned-ipa
+          path: yuexi-ios-unsigned.ipa
+          if-no-files-found: error

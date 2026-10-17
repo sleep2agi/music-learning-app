@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { playChord, playSequence, playTone, resumeAudio, type Timbre } from './synth.ts'
+import { playChord, playSequence, playTone, unlockAudio, type Timbre } from './synth.ts'
 
 export function useSound() {
   const [sounding, setSounding] = useState<number[]>([])
@@ -17,22 +17,22 @@ export function useSound() {
     setLast(notes)
   }
 
-  async function tone(midi: number, timbre: Timbre) {
-    await resumeAudio()
+  function tone(midi: number, timbre: Timbre) {
+    unlockAudio()
     remember([midi])
     scheduleClear(780)
     playTone(midi, { timbre, duration: timbre === 'guitar' ? 1.15 : 0.9 })
   }
 
-  async function chord(midis: readonly number[], timbre: Timbre) {
-    await resumeAudio()
+  function chord(midis: readonly number[], timbre: Timbre) {
+    unlockAudio()
     remember(midis)
     scheduleClear(1300)
     playChord(midis, timbre)
   }
 
-  async function sequence(midis: readonly number[], timbre: Timbre, gap = 0.34) {
-    await resumeAudio()
+  function sequence(midis: readonly number[], timbre: Timbre, gap = 0.34) {
+    unlockAudio()
     remember(midis)
     scheduleClear(midis.length * gap * 1000 + 700)
     playSequence(midis, gap, timbre)
